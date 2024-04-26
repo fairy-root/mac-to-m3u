@@ -79,7 +79,10 @@ def get_categories(available_categories: List[str]) -> List[str]:
 
     print(", ".join(available_categories))
     categories: str = input_colored("Select which categories should be used from above. Type category names separated by comma. Leave empty if you want to convert all categories. ", "cyan")
-    
+
+    if categories == "":
+        return []
+        
     categories: List[str] = categories.split(",") or [categories]
     if any([category for category in categories if category not in available_categories]):
         print_colored("Received some invalid category names! Try again. We recommend you to copy & paste from category list.", "red")

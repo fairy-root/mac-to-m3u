@@ -28,7 +28,7 @@ This Python script, `maclist.py`, takes input of an IPTV server link and a Mac a
    ```bash
    python maclist.py
    ```
-2. Follow the prompts to enter the IPTV link and the Mac address.
+2. Follow the prompts to enter the IPTV link, Mac address and (optionally) categories you want to export.
 3. The script will retrieve subscription information, fetch the channel list, and construct an M3U playlist file.
 
 ## Note

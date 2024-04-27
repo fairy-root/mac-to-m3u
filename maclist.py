@@ -66,6 +66,31 @@ def get_base_url() -> str:
 
     return f"http://{host}:{port}"
 
+def get_categories(available_categories: List[str]) -> List[str]:
+    """
+    Get categories which should be converted.
+
+    Args:
+        available_categories: List of categories which should be converted.
+
+    Returns:
+        Selected categories.
+    """
+
+    print(", ".join(available_categories))
+    categories: str = input_colored("Select which categories should be used from above. Type category names separated by comma. Leave empty if you want to convert all categories. ", "cyan")
+
+    if categories == "":
+        return []
+        
+    categories: List[str] = categories.split(",") or [categories]
+    if any([category for category in categories if category not in available_categories]):
+        print_colored("Received some invalid category names! Try again. We recommend you to copy & paste from category list.", "red")
+        get_categories(available_categories)
+    
+    return categories
+
+
 def get_mac_address() -> str:
     """
     Get MAC address from user input.
@@ -148,10 +173,12 @@ def get_channel_list(session: requests.Session, base_url: str, headers: Dict[str
         if res_genre.status_code == 200:
             id_genre: List[Dict[str, Any]] = json.loads(res_genre.text)['js']
             group_info = {group['id']: group['title'] for group in id_genre}
+
             url3: str = f"{base_url}/portal.php?type=itv&action=get_all_channels&JsHttpRequest=1-xml"
             res3: requests.Response = session.get(url3, headers=headers, timeout=timeout, allow_redirects=False)
             if res3.status_code == 200:
                 channels_data: List[Dict[str, Any]] = json.loads(res3.text)["js"]["data"]
+                
                 return channels_data, group_info
             else:
                 print_colored("Failed to fetch channel list", "red")
@@ -179,12 +206,17 @@ def save_channel_list(base_url: str, current: str, channels_data: List[Dict[str,
     """
     sanitized_url: str = base_url.replace("://", "_").replace("/", "_").replace(".", "_").replace(":", "_")
     try:
+        categories = get_categories(group_info.values())
         with open(f'{sanitized_url}_{current}.m3u', 'w') as file:
             file.write('#EXTM3U\n')
             count: int = 0
             for channel in channels_data:
                 group_id: int = channel['tv_genre_id']
                 group_name: str = group_info.get(group_id, "General")
+
+                if group_name not in categories and len(categories) > 0:
+                    continue
+
                 name: str = channel['name']
                 logo: str = channel.get('logo', '')
                 cmd_url: str = channel['cmds'][0]['url'].replace('ffmpeg ', '')
@@ -198,6 +230,7 @@ def save_channel_list(base_url: str, current: str, channels_data: List[Dict[str,
                 count += 1
                 file.write(channel_str)
             print_colored(f"Channels = {count}", "green")
+            print_colored(f"Included {len(categories)} categories", "green")
             print_colored(f"\nChannel list has been dumped to {sanitized_url}_{current}.m3u", "blue")
     except IOError as e:
         print_colored(f"Error saving channel list: {e}", "red")

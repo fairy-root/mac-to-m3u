@@ -9,7 +9,7 @@ This Python script, `maclist.py`, takes input of an IPTV server link and a Mac a
 - Constructs an M3U playlist file with channel information
 
 ## Added by Contribution
-# Sadorowo
+### Sadorowo
 - Added ability to select categories which should be exported
 - Script is asking for them after genre fetching
 - All available categories are displayed for user, separated by comma (,)

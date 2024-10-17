@@ -179,7 +179,7 @@ def save_channel_list(base_url: str, current: str, channels_data: List[Dict[str,
     """
     sanitized_url: str = base_url.replace("://", "_").replace("/", "_").replace(".", "_").replace(":", "_")
     try:
-        with open(f'{sanitized_url}_{current}.m3u', 'w') as file:
+        with open(f'{sanitized_url}_{current}.m3u', 'w', encoding='utf-16') as file:
             file.write('#EXTM3U\n')
             count: int = 0
             for channel in channels_data:

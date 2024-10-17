@@ -329,7 +329,7 @@ async def main() -> None:
                     if series_categories:
                         sanitized_url: str = base_url.replace("://", "_").replace("/", "_").replace(".", "_").replace(":", "_")
                         current: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                        with open(f'{sanitized_url}_{current}.m3u', 'w') as file:
+                        with open(f'{sanitized_url}_{current}.m3u', 'w', encoding='utf-16') as file:
                             file.write('#EXTM3U\n')
                             for category in tqdm(series_categories, desc="Fetching categories"):
                                 try:

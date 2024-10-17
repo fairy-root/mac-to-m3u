@@ -297,7 +297,7 @@ def main() -> None:
                 if vod_categories:
                     sanitized_url: str = base_url.replace("://", "_").replace("/", "_").replace(".", "_").replace(":", "_")
                     current: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                    with open(f'{sanitized_url}_{current}.m3u', 'w') as file:
+                    with open(f'{sanitized_url}_{current}.m3u', 'w', encoding='utf-16') as file:
                         file.write('#EXTM3U\n')
                         with ThreadPoolExecutor(max_workers=10) as executor:
                             futures = {executor.submit(fetch_and_save_vods, session, base_url, headers, category, file): category for category in vod_categories if category['id'] != "*"}
